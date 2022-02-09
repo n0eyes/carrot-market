@@ -11,6 +11,7 @@ module.exports = {
   plugin(function({addComponents, addBase}){
     addComponents({
       '.input' : {
+        borderColor: 'rgb(209,213,219)',
         borderRadius: '0.375Rem',
         borderWidth: '1px',
         padding: '0.75rem 1.5rem 0.75rem 1.5rem',

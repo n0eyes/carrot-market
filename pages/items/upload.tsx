@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 const Upload: NextPage = () => {
   return (
-    <div className="px-4 py-16">
+    <div className="space-y-4 px-4 py-16">
       <div>
         <div className="border-2 border-dashed hover:border-orange-500">
           <label className="group flex cursor-pointer place-content-center py-20">
@@ -25,34 +25,25 @@ const Upload: NextPage = () => {
           </label>
         </div>
       </div>
-      <div className="my-5">
+      <div className="space-y-1">
         <label>Price</label>
-        <div className="mt-1 flex items-center">
+        <div className="flex items-center">
           <div className="absolute left-6 text-gray-500">
             <span>$</span>
           </div>
-          <input
-            type="text"
-            placeholder="0.00"
-            className="input w-full"
-          />
+          <input type="text" placeholder="0.00" className="input w-full" />
           <div className="absolute right-6 text-gray-500">
             <span>USD</span>
           </div>
         </div>
       </div>
-      <div>
+      <div className="space-y-1">
         <label>Description</label>
-        <div className="my-1">
-          <textarea
-            rows={4}
-            className="input w-full resize-none"
-          />
+        <div>
+          <textarea rows={4} className="input w-full resize-none" />
         </div>
       </div>
-      <button className="mt-4 button hover:ring-2 w-full">
-        Upload product
-      </button>
+      <button className="button w-full hover:ring-2">Upload product</button>
     </div>
   );
 };

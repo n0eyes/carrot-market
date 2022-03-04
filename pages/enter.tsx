@@ -1,13 +1,18 @@
 import { useState } from "react";
+import { cls } from "../libs/utils";
 
 export default function Enter() {
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => setMethod("email");
   const onPhoneClick = () => setMethod("phone");
 
-  function cls(...className: string[]) {
-    return className.join(" ");
-  }
+  const toggleButtonCss = (buttonType: string) =>
+    cls(
+      "border-b-4 pb-4 font-bold transition-colors focus:outline-orange-500",
+      method === buttonType
+        ? `  border-b-orange-500  text-orange-500`
+        : ` border-b-transparent`
+    );
 
   return (
     <div className="px-4 pt-16">
@@ -16,26 +21,10 @@ export default function Enter() {
         <div className="flex  flex-col items-center">
           <h5 className="mt-8 text-sm text-gray-500">Enter using:</h5>
           <div className="mt-4 grid w-full grid-cols-2 border-b  text-lg text-gray-500 ">
-            <button
-              onClick={onEmailClick}
-              className={cls(
-                "border-b-4 pb-4 font-bold transition-colors focus:outline-orange-500",
-                method === "email"
-                  ? `  border-b-orange-500  text-orange-500`
-                  : ` border-b-transparent`
-              )}
-            >
+            <button onClick={onEmailClick} className={toggleButtonCss("email")}>
               Email
             </button>
-            <button
-              onClick={onPhoneClick}
-              className={cls(
-                "ransition-colors border-b-4 pb-4 font-bold focus:outline-orange-500",
-                method === "phone"
-                  ? `  border-b-orange-500  text-orange-500`
-                  : ` border-b-transparent`
-              )}
-            >
+            <button onClick={onPhoneClick} className={toggleButtonCss("phone")}>
               Phone
             </button>
           </div>
@@ -46,15 +35,15 @@ export default function Enter() {
             {method === "phone" ? "Phone number" : null}
           </label>
           <div>
-            {method === "email" ? (
+            {method === "email" && (
               <input
                 type="email"
                 placeholder="Input your email"
                 required
                 className="text-md input w-full px-2 py-2 outline-none placeholder:text-gray-500 "
               />
-            ) : null}
-            {method === "phone" ? (
+            )}
+            {method === "phone" && (
               <div className="flex">
                 <span className="flex cursor-pointer items-center rounded-l-md border border-r-0 bg-gray-100 px-3 text-sm  text-gray-600">
                   +82
@@ -63,12 +52,12 @@ export default function Enter() {
                   type="number"
                   placeholder="Input your phone"
                   required
-                  className="text-md input w-full rounded-r-md px-2 py-2  placeholder:text-gray-500 "
+                  className="text-md input w-full rounded-r-md rounded-l-none px-2 py-2  placeholder:text-gray-500 "
                 />
               </div>
-            ) : null}
+            )}
           </div>
-          <button className="my-6 rounded-md bg-orange-500 py-2 text-white outline-none hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 focus:bg-orange-600">
+          <button className="button my-6 py-2 hover:ring-2">
             {method === "email" ? "Get login link" : null}
             {method === "phone" ? "Get one-time password" : null}
           </button>

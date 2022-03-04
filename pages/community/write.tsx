@@ -1,17 +1,18 @@
 import type { NextPage } from "next";
+import Layout from "../../components/common/Layout";
 
 const Write: NextPage = () => {
   return (
-    <form className="px-4 py-10">
-      <textarea
-        className="input resize-none mt-1 shadow-sm w-full"
-        rows={4}
-        placeholder="Ask a question!"
-      />
-      <button className="button mt-2 w-full hover:ring-2">
-        Submit
-      </button>
-    </form>
+    <Layout canGoBack hasTabBar>
+      <form className="py-10">
+        <textarea
+          className="input mt-1 w-full resize-none shadow-sm"
+          rows={4}
+          placeholder="Ask a question!"
+        />
+        <button className="button mt-2 w-full hover:ring-2">Submit</button>
+      </form>
+    </Layout>
   );
 };
 

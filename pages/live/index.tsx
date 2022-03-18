@@ -1,21 +1,14 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 import FloatingButton from "../../components/common/FloatingButton";
 import Layout from "../../components/common/Layout";
+import LivePost from "../../components/live/LivePost";
 
 const Live: NextPage = () => {
   return (
     <Layout title="Live" hasTabBar>
       <div className="flex flex-col space-y-2 divide-y-2 pb-6">
         {[1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <Link href={`/live/${i}`} key={i}>
-            <a className="cursor-pointer px-4 py-4" key={i}>
-              <div className="aspect-video w-full rounded-md bg-slate-300 shadow-sm" />
-              <h3 className="mt-3 text-lg text-gray-700">
-                Let&apos;s try potatoes
-              </h3>
-            </a>
-          </Link>
+          <LivePost key={i} description="Let's try potatoes" />
         ))}
         <FloatingButton href={"/live/create"}>
           <svg

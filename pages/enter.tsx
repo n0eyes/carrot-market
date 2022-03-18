@@ -1,10 +1,33 @@
 import { useState } from "react";
+import { FieldError, useForm } from "react-hook-form";
 import { cls } from "../libs/utils";
 
+interface EnterFormProps<T> {
+  email?: T;
+  phone?: T;
+}
+
+type Nav = "email" | "phone";
+
 export default function Enter() {
-  const [method, setMethod] = useState<"email" | "phone">("email");
-  const onEmailClick = () => setMethod("email");
-  const onPhoneClick = () => setMethod("phone");
+  const [method, setMethod] = useState<Nav>("email");
+  const {
+    reset,
+    register,
+    clearErrors,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EnterFormProps<string>>();
+
+  const onNavClick = (nav: Nav) => {
+    reset();
+    setMethod(nav);
+    clearErrors(["email", "phone"]);
+  };
+
+  const onValid = async (data: EnterFormProps<string>) => {};
+
+  const onInValid = (errors: EnterFormProps<FieldError | undefined>) => {};
 
   const toggleButtonCss = (buttonType: string) =>
     cls(
@@ -21,15 +44,24 @@ export default function Enter() {
         <div className="flex  flex-col items-center">
           <h5 className="mt-8 text-sm text-gray-500">Enter using:</h5>
           <div className="mt-4 grid w-full grid-cols-2 border-b  text-lg text-gray-500 ">
-            <button onClick={onEmailClick} className={toggleButtonCss("email")}>
+            <button
+              onClick={() => onNavClick("email")}
+              className={toggleButtonCss("email")}
+            >
               Email
             </button>
-            <button onClick={onPhoneClick} className={toggleButtonCss("phone")}>
+            <button
+              onClick={() => onNavClick("phone")}
+              className={toggleButtonCss("phone")}
+            >
               Phone
             </button>
           </div>
         </div>
-        <form className="mt-8 flex flex-col">
+        <form
+          className="mt-8 flex flex-col"
+          onSubmit={handleSubmit(onValid, onInValid)}
+        >
           <label className="mb-2">
             {method === "email" ? "Email address" : null}
             {method === "phone" ? "Phone number" : null}
@@ -37,9 +69,13 @@ export default function Enter() {
           <div>
             {method === "email" && (
               <input
-                type="email"
+                {...register("email", {
+                  required: "Email is required",
+                  validate: {
+                    isEmail: (v) => v?.includes("@") || "Not email form",
+                  },
+                })}
                 placeholder="Input your email"
-                required
                 className="text-md input w-full px-2 py-2 outline-none placeholder:text-gray-500 "
               />
             )}
@@ -49,7 +85,13 @@ export default function Enter() {
                   +82
                 </span>
                 <input
-                  type="number"
+                  {...register("phone", {
+                    required: "Phone number is required",
+                    validate: {
+                      isNumber: (v) =>
+                        parseInt(v + "") !== NaN || "Only number",
+                    },
+                  })}
                   placeholder="Input your phone"
                   required
                   className="text-md input w-full rounded-r-md rounded-l-none px-2 py-2  placeholder:text-gray-500 "
@@ -57,7 +99,8 @@ export default function Enter() {
               </div>
             )}
           </div>
-          <button className="button my-6 py-2 hover:ring-2">
+          <div className="py-2 text-red-500">{errors[method]?.message}</div>
+          <button type="submit" className="button my-6 py-2 hover:ring-2">
             {method === "email" ? "Get login link" : null}
             {method === "phone" ? "Get one-time password" : null}
           </button>

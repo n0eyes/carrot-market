@@ -89,7 +89,7 @@ export default function Enter() {
                     required: "Phone number is required",
                     validate: {
                       isNumber: (v) =>
-                        parseInt(v + "") !== NaN || "Only number",
+                        !isNaN(parseInt(v + "")) || "Only number",
                     },
                   })}
                   placeholder="Input your phone"

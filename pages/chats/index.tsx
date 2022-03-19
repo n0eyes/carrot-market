@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import ChatRoom from "../../components/chats/Chatroom";
-import Layout from "../../components/common/Layout";
+import ChatRoom from "../@components/chats/Chatroom";
+import Layout from "../@components/common/Layout";
 
 const Chats: NextPage = () => {
   return (

@@ -1,6 +1,7 @@
+import useMutation from "libs/client/useMutation";
 import { useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import { cls } from "../libs/utils";
+import { cls } from "../libs/client/utils";
 
 interface EnterFormProps<T> {
   email?: T;
@@ -11,6 +12,7 @@ type Nav = "email" | "phone";
 
 export default function Enter() {
   const [method, setMethod] = useState<Nav>("email");
+  const [enter, { data, loading, error }] = useMutation("/api/user/enter");
   const {
     reset,
     register,
@@ -24,8 +26,9 @@ export default function Enter() {
     setMethod(nav);
     clearErrors(["email", "phone"]);
   };
-
-  const onValid = async (data: EnterFormProps<string>) => {};
+  const onValid = async (data: EnterFormProps<string>) => {
+    enter(data);
+  };
 
   const onInValid = (errors: EnterFormProps<FieldError | undefined>) => {};
 
@@ -101,8 +104,11 @@ export default function Enter() {
           </div>
           <div className="py-2 text-red-500">{errors[method]?.message}</div>
           <button type="submit" className="button my-6 py-2 hover:ring-2">
-            {method === "email" ? "Get login link" : null}
-            {method === "phone" ? "Get one-time password" : null}
+            {loading
+              ? "loading..."
+              : method === "email"
+              ? "Get login link"
+              : "Get one-time password"}
           </button>
         </form>
         <div>

@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import Layout from "../../components/common/Layout";
-import ProfileNavButton from "../../components/profile/ProfileNavButton";
-import ProfileReview from "../../components/profile/ProfileReview";
+import Layout from "../@components/common/Layout";
+import ProfileNavButton from "../@components/profile/ProfileNavButton";
+import ProfileReview from "../@components/profile/ProfileReview";
 
 const Profile: NextPage = () => {
   return (

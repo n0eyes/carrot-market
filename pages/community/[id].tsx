@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useState } from "react";
-import CommunityAnswer from "../../components/community/CommunityAnswer";
-import Layout from "../../components/common/Layout";
+import CommunityAnswer from "../@components/community/CommunityAnswer";
+import Layout from "../@components/common/Layout";
 
 const CommunityPostDetail: NextPage = () => {
   const [isAnswerOpened, setIsAnswerOpened] = useState(true);

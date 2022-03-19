@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
-import Link from "next/link";
-import FloatingButton from "../components/common/FloatingButton";
-import Item from "../components/common/Item";
-import Layout from "../components/common/Layout";
+import FloatingButton from "@components/common/FloatingButton";
+import Item from "@components/common/Item";
+import Layout from "@components/common/Layout";
 const Home: NextPage = () => {
   return (
     <Layout title="Home" hasTabBar>

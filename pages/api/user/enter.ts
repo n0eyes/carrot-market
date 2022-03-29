@@ -1,37 +1,50 @@
 import client from "libs/server/client";
 import withHandler from "libs/server/withHandler";
+import { ResponseType } from "libs/server/withHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseType>
+) {
   const { email, phone } = req.body;
-  const payload = email ? { email } : { phone: +phone };
+  const user = email ? { email } : { phone: +phone };
+  const payload = Math.floor(100000 + Math.random() * 900000) + "";
 
-  const user = await client.user.upsert({
-    //upsert = 탐색, 생성, 갱신을 한번에 하는 메소드
-    where: {
-      ...payload,
+  const token = await client.token.create({
+    data: {
+      payload,
+      user: {
+        connectOrCreate: {
+          where: {
+            ...user,
+          },
+          create: {
+            name: "Anonymous",
+            ...user,
+          },
+        },
+      },
     },
-    create: {
-      name: "Anonymous",
-      ...payload,
-    },
-    update: {},
   });
+
   // user = await client.user.findUnique({
   //   where: {
-  //     ...payload,
+  //     ...user,
   //   },
   // });
   // if (!user) {
   //   user = await client.user.create({
   //     data: {
   //       name: "Anonymous",
-  //       ...payload,
+  //       ...user,
   //     },
   //   });
   // }
 
-  return res.status(200).end();
+  return res.json({
+    ok: true,
+  });
 }
 
 export default withHandler("POST", handler);

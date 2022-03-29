@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import React from "react";
+export interface ResponseType {
+  ok: boolean;
+  [key: string]: any;
+}
 
 type method = "GET" | "POST" | "DELETE";
 
@@ -12,7 +15,7 @@ function withHandler(
       return res.status(405).end();
     }
     try {
-      await fn(req, res);
+      fn(req, res);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error });

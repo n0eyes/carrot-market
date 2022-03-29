@@ -7,7 +7,6 @@ interface EnterFormProps<T> {
   email?: T;
   phone?: T;
 }
-
 type Nav = "email" | "phone";
 
 export default function Enter() {

@@ -1,36 +1,58 @@
 import useMutation from "libs/client/useMutation";
 import { useState } from "react";
-import { FieldError, useForm } from "react-hook-form";
+import { FieldError, SubmitHandler, useForm } from "react-hook-form";
 import { cls } from "../libs/client/utils";
 
-interface EnterFormProps<T> {
+interface EnterFormProps {
+  email?: string;
+  phone?: string;
+  token?: number;
+}
+interface EnterFormErrors<T> {
   email?: T;
   phone?: T;
+  token?: T;
 }
 type Nav = "email" | "phone";
 
+interface MutationResult {
+  success: boolean;
+}
+
 export default function Enter() {
   const [method, setMethod] = useState<Nav>("email");
-  const [enter, { data, loading, error }] = useMutation("/api/user/enter");
+  const [enter, { data, loading, error }] =
+    useMutation<MutationResult>("/api/user/enter");
+  const [
+    confirmToken,
+    { data: tokenData, loading: tokenLoading, error: tokenError },
+  ] = useMutation<MutationResult>("/api/user/confirm");
   const {
     reset,
     register,
     clearErrors,
     handleSubmit,
     formState: { errors },
-  } = useForm<EnterFormProps<string>>();
+  } = useForm<EnterFormProps>();
 
   const onNavClick = (nav: Nav) => {
     reset();
     setMethod(nav);
     clearErrors(["email", "phone"]);
   };
-  const onValid = async (data: EnterFormProps<string>) => {
-    enter(data);
+  const onValid: SubmitHandler<EnterFormProps> = async (formData) => {
+    enter(formData);
+    reset();
   };
 
-  const onInValid = (errors: EnterFormProps<FieldError | undefined>) => {};
+  const onInValid = (errors: EnterFormErrors<FieldError>) => {
+    console.log(error);
+  };
 
+  const onConfirmValid: SubmitHandler<EnterFormProps> = async (token) => {
+    confirmToken(token);
+    reset();
+  };
   const toggleButtonCss = (buttonType: string) =>
     cls(
       "border-b-4 pb-4 font-bold transition-colors focus:outline-orange-500",
@@ -43,73 +65,107 @@ export default function Enter() {
     <div className="px-4 pt-16">
       <h3 className="text-center text-2xl font-bold">Enter to Carrot</h3>
       <div>
-        <div className="flex  flex-col items-center">
-          <h5 className="mt-8 text-sm text-gray-500">Enter using:</h5>
-          <div className="mt-4 grid w-full grid-cols-2 border-b  text-lg text-gray-500 ">
-            <button
-              onClick={() => onNavClick("email")}
-              className={toggleButtonCss("email")}
+        {!data?.success ? (
+          <>
+            {" "}
+            <div className="flex  flex-col items-center">
+              <h5 className="mt-8 text-sm text-gray-500">Enter using:</h5>
+              <div className="mt-4 grid w-full grid-cols-2 border-b  text-lg text-gray-500 ">
+                <button
+                  onClick={() => onNavClick("email")}
+                  className={toggleButtonCss("email")}
+                >
+                  Email
+                </button>
+                <button
+                  onClick={() => onNavClick("phone")}
+                  className={toggleButtonCss("phone")}
+                >
+                  Phone
+                </button>
+              </div>
+            </div>
+            <form
+              className="mt-8 flex flex-col"
+              onSubmit={handleSubmit(onValid, onInValid)}
             >
-              Email
-            </button>
-            <button
-              onClick={() => onNavClick("phone")}
-              className={toggleButtonCss("phone")}
+              <label className="mb-2">
+                {method === "email" ? "Email address" : null}
+                {method === "phone" ? "Phone number" : null}
+              </label>
+              <div>
+                {method === "email" && (
+                  <input
+                    {...register("email", {
+                      required: "Email is required",
+                      validate: {
+                        isEmail: (v) => v?.includes("@") || "Not email form",
+                      },
+                    })}
+                    placeholder="Input your email"
+                    className="text-md input w-full px-2 py-2 outline-none placeholder:text-gray-500 "
+                  />
+                )}
+                {method === "phone" && (
+                  <div className="flex">
+                    <span className="flex cursor-pointer items-center rounded-l-md border border-r-0 bg-gray-100 px-3 text-sm  text-gray-600">
+                      +82
+                    </span>
+                    <input
+                      {...register("phone", {
+                        required: "Phone number is required",
+                        validate: {
+                          isNumber: (v) =>
+                            !isNaN(parseInt(v + "")) || "Only number",
+                        },
+                      })}
+                      placeholder="Input your phone"
+                      required
+                      className="text-md input w-full rounded-r-md rounded-l-none px-2 py-2  placeholder:text-gray-500 "
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="py-2 text-red-500">{errors[method]?.message}</div>
+              <button type="submit" className="button my-6 py-2 hover:ring-2">
+                {loading
+                  ? "loading..."
+                  : method === "email"
+                  ? "Get login link"
+                  : "Get one-time password"}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <form
+              className="mt-8 flex flex-col"
+              onSubmit={handleSubmit(onConfirmValid)}
             >
-              Phone
-            </button>
-          </div>
-        </div>
-        <form
-          className="mt-8 flex flex-col"
-          onSubmit={handleSubmit(onValid, onInValid)}
-        >
-          <label className="mb-2">
-            {method === "email" ? "Email address" : null}
-            {method === "phone" ? "Phone number" : null}
-          </label>
-          <div>
-            {method === "email" && (
-              <input
-                {...register("email", {
-                  required: "Email is required",
-                  validate: {
-                    isEmail: (v) => v?.includes("@") || "Not email form",
-                  },
-                })}
-                placeholder="Input your email"
-                className="text-md input w-full px-2 py-2 outline-none placeholder:text-gray-500 "
-              />
-            )}
-            {method === "phone" && (
-              <div className="flex">
-                <span className="flex cursor-pointer items-center rounded-l-md border border-r-0 bg-gray-100 px-3 text-sm  text-gray-600">
-                  +82
-                </span>
+              <label className="mb-2">Confirmation Token</label>
+              <div>
                 <input
-                  {...register("phone", {
-                    required: "Phone number is required",
+                  {...register("token", {
+                    required: "Token is required",
                     validate: {
-                      isNumber: (v) =>
-                        !isNaN(parseInt(v + "")) || "Only number",
+                      isNumber: (v: any) =>
+                        typeof (v - 0) == "number" || "Not token form",
                     },
                   })}
-                  placeholder="Input your phone"
-                  required
-                  className="text-md input w-full rounded-r-md rounded-l-none px-2 py-2  placeholder:text-gray-500 "
+                  type="number"
+                  placeholder="Input your token"
+                  className="text-md input w-full px-2 py-2 outline-none placeholder:text-gray-500 "
                 />
               </div>
-            )}
-          </div>
-          <div className="py-2 text-red-500">{errors[method]?.message}</div>
-          <button type="submit" className="button my-6 py-2 hover:ring-2">
-            {loading
-              ? "loading..."
-              : method === "email"
-              ? "Get login link"
-              : "Get one-time password"}
-          </button>
-        </form>
+              <div className="py-2 text-red-500">
+                {errors["token"]?.message}
+              </div>
+              <button type="submit" className="button my-6 py-2 hover:ring-2">
+                {tokenLoading ? "loading..." : "Confirm Token"}
+              </button>
+            </form>
+          </>
+        )}
         <div>
           <div className="relative mt-4">
             <div className="absolute w-full border-t border-gray-300" />

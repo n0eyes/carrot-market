@@ -32,21 +32,21 @@ async function handler(
     },
   });
 
-  if (phone) {
-    const result = await twilioClient.messages.create({
-      messagingServiceSid: process.env.MESSAGE_SID,
-      to: process.env.MY_PHONE!,
-      body: payload,
-    });
-  } else if (email) {
-    const email = await mail.send({
-      from: "doll4586633@naver.com",
-      to: "doll4586633@naver.com",
-      subject: "Carrot Market Verification",
-      text: payload,
-      html: `<strong>Your token is ${payload}</strong>`,
-    });
-  }
+  // if (phone) {
+  //   const result = await twilioClient.messages.create({
+  //     messagingServiceSid: process.env.MESSAGE_SID,
+  //     to: process.env.MY_PHONE!,
+  //     body: payload,
+  //   });
+  // } else if (email) {
+  //   const email = await mail.send({
+  //     from: "doll4586633@naver.com",
+  //     to: "doll4586633@naver.com",
+  //     subject: "Carrot Market Verification",
+  //     text: payload,
+  //     html: `<strong>Your token is ${payload}</strong>`,
+  //   });
+  // }
   // user = await client.user.findUnique({
   //   where: {
   //     ...user,
@@ -62,7 +62,7 @@ async function handler(
   // }
 
   return res.json({
-    ok: true,
+    success: true,
   });
 }
 
